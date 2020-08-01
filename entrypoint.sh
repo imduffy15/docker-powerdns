@@ -35,6 +35,11 @@ docker_setup_env() {
     file_env 'MYSQL_PASS' $MYSQL_DEFAULT_PASS
     file_env 'MYSQL_USER' $MYSQL_DEFAULT_USER
     file_env 'MYSQL_PORT' $MYSQL_DEFAULT_PORT
+    file_env 'WEBSERVER_ENABLED' $WEBSERVER_DEFAULT_ENABLED
+    file_env 'WEBSERVER_BIND_ADDRESS' $WEBSERVER_DEFAULT_BIND_ADDRESS
+    file_env 'WEBSERVER_PORT' $WEBSERVER_DEFAULT_PORT
+    file_env 'API_ENABLED' $API_DEFAULT_ENABLED
+    file_env 'API_KEY' $API_DEFAULT_KEY
 }
 
 docker_setup_env
@@ -90,6 +95,21 @@ if $MYSQL_AUTOCONF ; then
   fi
 
   unset -v MYSQL_PASS
+fi
+
+if $WEBSERVER_ENABLED ; then
+  sed -r -i "s/^[# ]*webserver=.*/webserver=yes/g" /etc/pdns/pdns.conf
+  sed -r -i "s/^[# ]*webserver-address=.*/webserver-address=${WEBSERVER_BIND_ADDRESS}/g" /etc/pdns/pdns.conf
+  sed -r -i "s/^[# ]*webserver-port=.*/webserver-port=${WEBSERVER_PORT}/g" /etc/pdns/pdns.conf
+
+  if [ -z ${WEBSERVER_PASSWORD+x} ] ; then
+    sed -r -i "s/^[# ]*webserver-password=.*/webserver-password=${WEBSERVER_PASSWORD}/g" /etc/pdns/pdns.conf
+  fi
+fi
+
+if $API_ENABLED ; then
+  sed -r -i "s/^[# ]*api=.*/api=yes/g" /etc/pdns/pdns.conf
+  sed -r -i "s/^[# ]*api-key=.*/api-key=${API_KEY}/g" /etc/pdns/pdns.conf
 fi
 
 # Run pdns server
