@@ -1,19 +1,7 @@
 FROM alpine:3.12
 MAINTAINER Ian Duffy <ian@ianduffy.ie>
 
-ENV REFRESHED_AT="2020-07-1" \
-    POWERDNS_VERSION=4.3.0 \
-    MYSQL_DEFAULT_AUTOCONF=true \
-    MYSQL_DEFAULT_HOST="mysql" \
-    MYSQL_DEFAULT_PORT="3306" \
-    MYSQL_DEFAULT_USER="root" \
-    MYSQL_DEFAULT_PASS="root" \
-    MYSQL_DEFAULT_DB="pdns" \
-    WEBSERVER_DEFAULT_ENABLED=true \
-    WEBSERVER_DEFAULT_BIND_ADDRESS=0.0.0.0 \
-    WEBSERVER_DEFAULT_PORT=8081 \
-    API_DEFAULT_ENABLED=true \
-    API_DEFAULT_KEY="changeme"
+ENV POWERDNS_VERSION=4.3.0
 
 RUN apk --update add bash libpq sqlite-libs libstdc++ libgcc mariadb-client mariadb-connector-c lua-dev curl-dev && \
     apk add --virtual build-deps \
@@ -36,5 +24,19 @@ COPY entrypoint.sh /
 
 EXPOSE 53/tcp 53/udp
 EXPOSE 8081/tcp
+
+ENV REFRESHED_AT="2020-07-1" \
+    MYSQL_DEFAULT_AUTOCONF=true \
+    MYSQL_DEFAULT_HOST="mysql" \
+    MYSQL_DEFAULT_PORT="3306" \
+    MYSQL_DEFAULT_USER="root" \
+    MYSQL_DEFAULT_PASS="root" \
+    MYSQL_DEFAULT_DB="pdns" \
+    WEBSERVER_DEFAULT_ENABLED=true \
+    WEBSERVER_DEFAULT_BIND_ADDRESS=0.0.0.0 \
+    WEBSERVER_DEFAULT_PORT=8081 \
+    WEBSERVER_DEFAULT_ALLOW_FROM="0.0.0.0/0,::/0" \
+    API_DEFAULT_ENABLED=true \
+    API_DEFAULT_KEY="changeme"
 
 ENTRYPOINT ["/entrypoint.sh"]

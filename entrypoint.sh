@@ -38,6 +38,7 @@ docker_setup_env() {
     file_env 'WEBSERVER_ENABLED' $WEBSERVER_DEFAULT_ENABLED
     file_env 'WEBSERVER_BIND_ADDRESS' $WEBSERVER_DEFAULT_BIND_ADDRESS
     file_env 'WEBSERVER_PORT' $WEBSERVER_DEFAULT_PORT
+    file_env 'WEBSERVER_ALLOW_FROM' $WEBSERVER_DEFAULT_ALLOW_FROM
     file_env 'API_ENABLED' $API_DEFAULT_ENABLED
     file_env 'API_KEY' $API_DEFAULT_KEY
 }
@@ -101,6 +102,8 @@ if $WEBSERVER_ENABLED ; then
   sed -r -i "s/^[# ]*webserver=.*/webserver=yes/g" /etc/pdns/pdns.conf
   sed -r -i "s/^[# ]*webserver-address=.*/webserver-address=${WEBSERVER_BIND_ADDRESS}/g" /etc/pdns/pdns.conf
   sed -r -i "s/^[# ]*webserver-port=.*/webserver-port=${WEBSERVER_PORT}/g" /etc/pdns/pdns.conf
+  sed -r -i "s/^[# ]*webserver-allow-from=.*/webserver-allow-from=${WEBSERVER_ALLOW_FROM}/g" /etc/pdns/pdns.conf
+
 
   if [ -z ${WEBSERVER_PASSWORD+x} ] ; then
     sed -r -i "s/^[# ]*webserver-password=.*/webserver-password=${WEBSERVER_PASSWORD}/g" /etc/pdns/pdns.conf
