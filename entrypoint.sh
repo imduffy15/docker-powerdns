@@ -104,7 +104,7 @@ if $WEBSERVER_ENABLED ; then
   sed -r -i "s/^[# ]*webserver=.*/webserver=yes/g" /etc/pdns/pdns.conf
   sed -r -i "s/^[# ]*webserver-address=.*/webserver-address=${WEBSERVER_BIND_ADDRESS}/g" /etc/pdns/pdns.conf
   sed -r -i "s/^[# ]*webserver-port=.*/webserver-port=${WEBSERVER_PORT}/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*webserver-allow-from=.*/webserver-allow-from=${WEBSERVER_ALLOW_FROM}/g" /etc/pdns/pdns.conf
+  sed -r -i "s|^[# ]*webserver-allow-from=.*|webserver-allow-from=${WEBSERVER_ALLOW_FROM}|g" /etc/pdns/pdns.conf
 
 
   if [ -z ${WEBSERVER_PASSWORD+x} ] ; then
