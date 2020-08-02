@@ -15,7 +15,7 @@ RUN apk --update add bash libpq sqlite-libs libstdc++ libgcc mariadb-client mari
 FROM alpine:3.12
 MAINTAINER Ian Duffy <ian@ianduffy.ie>
 
-RUN apk --update add bash mariadb-client && \
+RUN apk --update add bash mariadb-connector-c lua-libs libpq sqlite-libs libcurl mariadb-client && \
     addgroup -S pdns 2>/dev/null && \
     adduser -S -D -H -h /var/empty -s /bin/false -G pdns -g pdns pdns 2>/dev/null && \
     rm -rf /var/cache/apk/*
@@ -42,5 +42,7 @@ ENV REFRESHED_AT="2020-07-1" \
     WEBSERVER_DEFAULT_ALLOW_FROM="0.0.0.0/0,::/0" \
     API_DEFAULT_ENABLED=true \
     API_DEFAULT_KEY="changeme"
+
+ENV PATH="/opt/pdns/bin:/opt/pdns/sbin:${PATH}"
 
 ENTRYPOINT ["/entrypoint.sh"]
