@@ -52,12 +52,12 @@ docker_setup_env
 
 if $MYSQL_AUTOCONF ; then
   # Set MySQL Credentials in pdns.conf
-  sed -r -i "s/^[# ]*gmysql-host=.*/gmysql-host=${MYSQL_HOST}/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*gmysql-port=.*/gmysql-port=${MYSQL_PORT}/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*gmysql-user=.*/gmysql-user=${MYSQL_USER}/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*gmysql-password=.*/gmysql-password=${MYSQL_PASS}/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*gmysql-dbname=.*/gmysql-dbname=${MYSQL_DB}/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*gmysql-dnssec=.*/gmysql-dnssec=${MYSQL_DNSSEC}/g" /etc/pdns/pdns.conf
+  sed -r -i "s/^[# ]*gmysql-host=.*/gmysql-host=${MYSQL_HOST}/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s/^[# ]*gmysql-port=.*/gmysql-port=${MYSQL_PORT}/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s/^[# ]*gmysql-user=.*/gmysql-user=${MYSQL_USER}/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s/^[# ]*gmysql-password=.*/gmysql-password=${MYSQL_PASS}/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s/^[# ]*gmysql-dbname=.*/gmysql-dbname=${MYSQL_DB}/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s/^[# ]*gmysql-dnssec=.*/gmysql-dnssec=${MYSQL_DNSSEC}/g" /opt/pdns/etc/pdns.conf
 
   MYSQLCMD="mysql --host=${MYSQL_HOST} --user=${MYSQL_USER} --password=${MYSQL_PASS} --port=${MYSQL_PORT} -r -N"
 
@@ -84,11 +84,11 @@ if $MYSQL_AUTOCONF ; then
 
   if [ "$(echo "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = \"$MYSQL_DB\";" | $MYSQLCMD)" -le 1 ]; then
     echo Initializing Database
-    cat /etc/pdns/schema.sql | $MYSQLCMD
+    cat /opt/pdns/etc/schema.sql | $MYSQLCMD
 
     # Run custom mysql post-init sql scripts
-    if [ -d "/etc/pdns/mysql-postinit" ]; then
-      for SQLFILE in $(ls -1 /etc/pdns/mysql-postinit/*.sql | sort) ; do
+    if [ -d "/opt/pdns/etc/mysql-postinit" ]; then
+      for SQLFILE in $(ls -1 /opt/pdns/etc/mysql-postinit/*.sql | sort) ; do
         echo Source $SQLFILE
         cat $SQLFILE | $MYSQLCMD
       done
@@ -99,20 +99,20 @@ if $MYSQL_AUTOCONF ; then
 fi
 
 if $WEBSERVER_ENABLED ; then
-  sed -r -i "s/^[# ]*webserver=.*/webserver=yes/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*webserver-address=.*/webserver-address=${WEBSERVER_BIND_ADDRESS}/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*webserver-port=.*/webserver-port=${WEBSERVER_PORT}/g" /etc/pdns/pdns.conf
-  sed -r -i "s|^[# ]*webserver-allow-from=.*|webserver-allow-from=${WEBSERVER_ALLOW_FROM}|g" /etc/pdns/pdns.conf
+  sed -r -i "s/^[# ]*webserver=.*/webserver=yes/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s/^[# ]*webserver-address=.*/webserver-address=${WEBSERVER_BIND_ADDRESS}/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s/^[# ]*webserver-port=.*/webserver-port=${WEBSERVER_PORT}/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s|^[# ]*webserver-allow-from=.*|webserver-allow-from=${WEBSERVER_ALLOW_FROM}|g" /opt/pdns/etc/pdns.conf
 
 
   if [ -z ${WEBSERVER_PASSWORD+x} ] ; then
-    sed -r -i "s/^[# ]*webserver-password=.*/webserver-password=${WEBSERVER_PASSWORD}/g" /etc/pdns/pdns.conf
+    sed -r -i "s/^[# ]*webserver-password=.*/webserver-password=${WEBSERVER_PASSWORD}/g" /opt/pdns/etc/pdns.conf
   fi
 fi
 
 if $API_ENABLED ; then
-  sed -r -i "s/^[# ]*api=.*/api=yes/g" /etc/pdns/pdns.conf
-  sed -r -i "s/^[# ]*api-key=.*/api-key=${API_KEY}/g" /etc/pdns/pdns.conf
+  sed -r -i "s/^[# ]*api=.*/api=yes/g" /opt/pdns/etc/pdns.conf
+  sed -r -i "s/^[# ]*api-key=.*/api-key=${API_KEY}/g" /opt/pdns/etc/pdns.conf
 fi
 
 # Run pdns server

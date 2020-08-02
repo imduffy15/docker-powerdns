@@ -20,11 +20,13 @@ RUN apk --update add bash mariadb-connector-c lua-libs libpq sqlite-libs libcurl
     adduser -S -D -H -h /var/empty -s /bin/false -G pdns -g pdns pdns 2>/dev/null && \
     rm -rf /var/cache/apk/*
 
-COPY schema.sql pdns.conf /etc/pdns/
-COPY entrypoint.sh /
-
 COPY --from=compiler /opt /opt
 COPY --from=compiler /usr/lib/libboost_program_options* /usr/lib/
+
+COPY schema.sql pdns.conf /opt/pdns/etc/
+COPY entrypoint.sh /
+
+RUN mkdir -p /opt/pdns/etc/conf.d
 
 EXPOSE 53/tcp 53/udp
 EXPOSE 8081/tcp
